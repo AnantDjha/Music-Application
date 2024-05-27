@@ -15,7 +15,7 @@ export default function UseAuth(code)
             setRefreshToken(res.data.refreshToken)
             // setExoireIn(61)
             setExoireIn(res.data.expireIn)
-            window.history.pushState({},null,"/")
+            // window.history.pushState({},null,"/")
         }).catch(()=>{
             window.location = "/"
         })

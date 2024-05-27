@@ -8,17 +8,33 @@ import SpotifyWebPlayer from "react-spotify-web-playback";
 import axios from "axios";
 
 
+// import { WebSocket } from "vite";
+
+
 const webApi = new SpotifyWebApi({
     clientId: "a3dcb9dd9fb746b99ed2a17136136091"
 });
 
+
 export default function Dashboard({ code }) {
+   
     const [search, setSearch] = useState("");
     const accessToken = UseAuth(code);
     const [result, setResult] = useState([]);
     const [playerUri, setPlayerUri] = useState();
     const [isPlay,setIsPlay] = useState(false);
     const [lyrics,setLyrics] = useState("")
+
+
+    useEffect(() => {
+        if(!accessToken) return
+        const socket = new WebSocket('wss://gae2-dealer.spotify.com/?access_token='+accessToken);
+        return () => {
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.close();
+            }
+        };
+    }, []);
 
     useState(()=>{
         setIsPlay(true)
@@ -122,10 +138,13 @@ export default function Dashboard({ code }) {
                     margin: "auto"
                 }}> 
                     <SpotifyWebPlayer
-                        token={accessToken}
+                        token= {accessToken}
                         showSaveIcon
                         play={isPlay}
                         uris={playerUri ? [playerUri.uri] : []}
+                        callback={state =>{
+                            if(!state.isPlaying) setIsPlay(false)
+                        }}
                         styles={{
                             activeColor: '#1db954',
                             bgColor: '#282828',

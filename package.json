@@ -16,6 +16,7 @@
     "react-bootstrap": "^2.10.2",
     "react-dom": "^18.2.0",
     "react-spotify-web-playback": "^0.14.4",
+    "react-spotify-web-playback-sdk": "^3.0.2",
     "spotify-web-api-node": "^5.0.2"
   },
   "devDependencies": {
