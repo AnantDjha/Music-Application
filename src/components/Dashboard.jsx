@@ -27,6 +27,11 @@ export default function Dashboard({ code }) {
 
 
     useEffect(() => {
+        if (!accessToken) return;
+        webApi.setAccessToken(accessToken);
+    },[accessToken]);
+
+    useEffect(() => {
         if(!accessToken) return
         const socket = new WebSocket('wss://gae2-dealer.spotify.com/?access_token='+accessToken);
         return () => {
@@ -53,17 +58,15 @@ export default function Dashboard({ code }) {
     },[playerUri])
 
     const changePlayer = (track) => {
-        if (!accessToken) return;
 
         setPlayerUri(track);
         console.log(track.name);
         setSearch("")
     };
 
-    useEffect(() => {
-        if (!accessToken) return;
-        webApi.setAccessToken(accessToken);
-    }, [accessToken]);
+   
+
+   
 
     useEffect(() => {
         if (!search) {
@@ -89,6 +92,8 @@ export default function Dashboard({ code }) {
 
         return () => cancel = true;
     }, [search, accessToken]);
+
+    
 
     return (
         <div className="main" style={{ height: "100vh", width: "100vw" }}>
@@ -117,14 +122,14 @@ export default function Dashboard({ code }) {
                     margin: "auto",
                     overflowY: "auto"
                 }}>
-                    {result.map(a => (
+                    {result ? result.map(a => (
                         <Songs
                             style={{ width: "100%", height: "3rem" }}
                             key={a.uri}
                             a={a}
                             changePlayer={changePlayer}
                         />
-                    ))}
+                    )) : <></>}
 
                     {search.length === 0 && <p>{lyrics}</p>}
                 </div>
@@ -138,7 +143,7 @@ export default function Dashboard({ code }) {
                     margin: "auto"
                 }}> 
                     <SpotifyWebPlayer
-                        token= {accessToken}
+                        token= {UseAuth(code)}
                         showSaveIcon
                         play={isPlay}
                         uris={playerUri ? [playerUri.uri] : []}
